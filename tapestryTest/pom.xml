@@ -1,0 +1,308 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.tapestryTest</groupId>
+  <artifactId>tapestryTest</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jdbc.url>jdbc:mysql://127.0.0.1:3306/mysql</jdbc.url>
+    <jdbc.username>root</jdbc.username>
+    <jdbc.password>fanhy</jdbc.password>
+    
+    <hibernate.version>4.3.11.Final</hibernate.version>
+    <spring.version>4.2.4.RELEASE</spring.version>
+    <jackson.version>2.4.6</jackson.version>
+    <joda-time.version>2.5</joda-time.version>
+    <guava.version>17.0</guava.version>
+    <spring.data.jpa.version>1.6.6.RELEASE</spring.data.jpa.version>
+    <tapestry.version>5.3.8</tapestry.version>
+    <slf4j.version>1.7.13</slf4j.version>
+    <tapestry.jquery.version>3.4.2</tapestry.jquery.version>
+  </properties>
+  
+  <build>
+  	<resources>
+          <resource>
+              <directory>src/main/resources</directory>
+              <includes>
+                  <include>*.xml</include>
+                  <include>*.properties</include>
+              </includes>
+              <filtering>true</filtering>
+          </resource>
+          <resource>
+              <directory>src/main/resources</directory>
+          </resource>
+          <resource>
+              <directory>src/main/java</directory>
+              <includes>
+                  <include>*.tml</include>
+                  <include>**/**.tml</include>
+                  <include>*.properties</include>
+                  <include>**/**.properties</include>
+              </includes>
+          </resource>
+      </resources>
+      <testResources>
+          <testResource>
+              <directory>src/test/resources</directory>
+              <filtering>true</filtering>
+          </testResource>
+      </testResources>
+        
+  	<plugins>
+        <plugin><!-- 启动tomcat -->
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.2</version>
+            <configuration>
+                <update>true</update>
+                <charset>UTF-8</charset>
+                <port>8080</port>
+                <systemProperties>
+                    <jdbc.url>${jdbc.url}</jdbc.url>
+                    <jdbc.username>${jdbc.username}</jdbc.username>
+                    <jdbc.password>${jdbc.password}</jdbc.password>
+                    <tapestry.execution-mode>development</tapestry.execution-mode>
+                </systemProperties>
+                <path>/</path><!-- localhost:8080/aa 浏览器中输入的url-->
+<!--                 <port>88</port>端口 -->
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>maven-jetty-plugin</artifactId>
+            <version>6.1.16</version>
+            <configuration>
+                <contextPath>/</contextPath>
+                <systemProperties>
+                    <systemProperty>
+                        <name>tapestry.execution-mode</name>
+                        <value>development</value>
+                    </systemProperty>
+                    <systemProperty>
+                        <name>jdbc.url</name>
+                        <value>${jdbc.url}</value>
+                    </systemProperty>
+                    <systemProperty>
+                        <name>jdbc.username</name>
+                        <value>${jdbc.username}</value>
+                    </systemProperty>
+                    <systemProperty>
+                        <name>jdbc.password</name>
+                        <value>${jdbc.password}</value>
+                    </systemProperty>
+                    <systemProperty>
+                        <name>debug</name>
+                        <value>true</value>
+                    </systemProperty>
+                    <systemProperty>
+                        <name>org.mortbay.jetty.Request.maxFormContentSize</name>
+                        <value>-1</value>
+                    </systemProperty>
+                </systemProperties>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>default-war</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>war</goal>
+                    </goals>
+                    <configuration>
+                        <packagingIncludes>
+                            META-INF/*/,
+                            static/*/,
+                            WEB-INF/*/,
+                            favicon.ico
+                        </packagingIncludes>
+                        <packagingExcludes>
+                            WEB-INF/classes/logback-test.xml
+                        </packagingExcludes>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.6</source>
+                <target>1.6</target>
+            </configuration>
+        </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+  	<!-- hibernate -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+    </dependency>
+    <!--spring framework-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <!--jackson工具包-->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+    </dependency>
+    <!--时间工具包-->
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
+    </dependency>
+    <!--谷歌工具类-->
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+    </dependency>
+    <!--spring data-->
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-jpa</artifactId>
+        <version>${spring.data.jpa.version}</version>
+    </dependency>
+    <!--hibernate 的 JPA规范-->
+    <dependency><!-- repository -->
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${hibernate.version}</version>
+        <scope>runtime</scope>
+    </dependency>
+    <!-- tapestry dependencies -->
+    <dependency>
+        <groupId>org.apache.tapestry</groupId>
+        <artifactId>tapestry-core</artifactId>
+        <version>${tapestry.version}</version>
+        <exclusions>
+            <exclusion>
+                <groupId>javassist</groupId>
+                <artifactId>javassist</artifactId>
+            </exclusion>
+            <exclusion>
+                <artifactId>log4j</artifactId>
+                <groupId>log4j</groupId>
+            </exclusion>
+            <exclusion>
+                <artifactId>slf4j-log4j12</artifactId>
+                <groupId>org.slf4j</groupId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <!--servlet-->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
+    </dependency>
+<!--     mysqlDriver -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.24</version>
+    </dependency>
+<!--     collection pool -->
+    <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>1.0.25</version>
+        <scope>runtime</scope>
+    </dependency>
+	<dependency>
+        <groupId>org.apache.tapestry</groupId>
+        <artifactId>tapestry-spring</artifactId>
+        <version>${tapestry.version}</version>
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+	<dependency><!-- 保存响应 -->
+           <groupId>org.got5</groupId>
+           <artifactId>tapestry5-jquery</artifactId>
+           <version>${tapestry.jquery.version}</version>
+    </dependency>
+    
+    
+<!--springMvc-->
+    <dependency><!-- ContextLoaderListener -->
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <!--事务管理-->
+<!--     <dependency> -->
+<!--         <groupId>org.springframework</groupId> -->
+<!--         <artifactId>spring-tx</artifactId> -->
+<!--         <version>${spring.version}</version> -->
+<!--     </dependency> -->
+<!-- 	<dependency> -->
+<!--         <groupId>org.apache.tapestry</groupId> -->
+<!--         <artifactId>tapestry-upload</artifactId> -->
+<!--         <version>${tapestry.version}</version> -->
+<!--     </dependency> -->
+<!-- slf4j dependencies -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+    </dependency>
+	<!--Apache Commons Logging 日志输出重定向到 SLF4J-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+<!--logging-->
+        <!--完整实现了slf4j API--><!-- 控制台输出，日志记录，logback.xml使控制台输出想要输出的数据 -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.6</version>
+            <scope>runtime</scope>
+        </dependency>
+		<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

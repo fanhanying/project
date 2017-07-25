@@ -1,0 +1,8 @@
+{
+  "name": "bootstrap",
+  "parent":"../package.json",
+  "spm": {
+    "source": "js",
+    "output": ["bootstrap.js", "bootstrap.css"]
+  }
+}

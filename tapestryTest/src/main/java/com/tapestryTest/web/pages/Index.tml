@@ -1,0 +1,42 @@
+<div t:type="layout" t:title="'首页'"
+     xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd" xmlns:p="tapestry:parameter">
+
+    <div class="container-fluid" t:type="zone" t:id="mainZone" id="mainZone">
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="hero-unit">
+                    <form t:id="userForm" t:type="form" t:zone="^" class="form-signin" autocomplete="off">
+                        <h2 class="form-signin-heading">用户</h2>
+                        <input t:type="textfield" t:value="code" class="input-block-level" placeholder="帐号"/>
+                        <input t:type="textfield" t:value="name" class="input-block-level" placeholder="姓名"/>
+                        <button class="btn btn-large btn-primary" type="submit">新增</button>
+                    </form>
+                </div>
+            </div>
+            <div class="span9">
+                <div class="hero-unit">
+                    <h1>Hello, world!</h1>
+                    <div class="row-fluid">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>帐号</th>
+                                <th>姓名</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t:loop source="userList" value="current">
+                                <tr>
+                                <td>${current.code}</td>
+                                <td>${current.name}</td>
+                                </tr>
+                            </t:loop>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

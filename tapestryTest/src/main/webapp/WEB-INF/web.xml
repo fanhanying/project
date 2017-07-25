@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="sunisco-web" version="2.5">
+
+    <display-name>web-platform</display-name>
+
+    <!--spring 参数 applicationContext配置路径-->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:/conf/context/**/*-context.xml</param-value>
+    </context-param>
+
+    <listener><!-- 自动装载applicationContext配置 -->
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!--tapestry参数-->
+    <!-- The only significant configuration for Tapestry 5, this informs Tapestry
+        of where to look for pages, components and mixins. -->
+    <context-param>
+        <param-name>tapestry.app-package</param-name>
+        <param-value>com.tapestryTest.web</param-value>
+    </context-param>
+
+    <!-- Specify some additional Modules for two different execution modes:
+        development and qa. Remember that the default execution mode is production -->
+    <context-param>
+        <param-name>tapestry.development-modules</param-name>
+        <param-value>
+            com.tapestryTest.web.services.DevelopmentModule
+        </param-value>
+    </context-param>
+
+    <!--使用外部spring-->
+    <context-param>
+        <param-name>tapestry.use-external-spring-context</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>tapestry.secure-enabled</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <!--tapestry 启动器-->
+    <filter>
+        <filter-name>app</filter-name>
+        <filter-class>org.apache.tapestry5.spring.TapestrySpringFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>app</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <!-- Processes application requests -->
+    <!--spring mvc 启动-->
+    <servlet>
+        <servlet-name>dispatch</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:/conf/servlet/**/*-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatch</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+
+</web-app>
